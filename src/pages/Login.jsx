@@ -1,85 +1,86 @@
 import { Box, Text } from "@mantine/core";
-import axios from "axios";
+// import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import useAuthContext from "../context/AuthContext";
 
 export default function Login() {
-  const [login, setLogin] = useState(false);
+  const [logStatus, setLogStatus] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const {login, register} = useAuthContext();
 
   const Register = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.post("http://localhost:8000/api/register", {
-        name,
-        email,
-        password,
-      });
-      console.log(response.data.error);
-      if (response.data.error) {
-        toast.error(response.data.error);
-      } else {
-        localStorage.setItem("authToken", response.data.token);
-        toast.success("You are registered !");
-        navigate("/");
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 422) {
-        if (error.response.data.errors.name) {
-          toast.error(error.response.data.errors.name[0]);
-        } else if (error.response.data.errors.email) {
-          toast.error(error.response.data.errors.email[0]);
-        } else {
-          toast.error(error.response.data.errors.password[0]);
-        }
-        console.log(error.response.data.errors.name[0]);
-      } else {
-        // Gérer d'autres types d'erreurs
-        console.error("Request Error:", error.message);
-      }
-    }
+    register({name, email, password});
+    // try {
+    //   const response = await axios.post("http://localhost:8000/api/register", {
+    //     name,
+    //     email,
+    //     password,
+    //   });
+    //   if (response.data.error) {
+    //     toast.error(response.data.error);
+    //   } else {
+    //     localStorage.setItem("authToken", response.data.token);
+    //     toast.success("You are registered !");
+    //     navigate("/");
+    //   }
+    // } catch (error) {
+    //   if (error.response && error.response.status === 422) {
+    //     if (error.response.data.errors.name) {
+    //       toast.error(error.response.data.errors.name[0]);
+    //     } else if (error.response.data.errors.email) {
+    //       toast.error(error.response.data.errors.email[0]);
+    //     } else {
+    //       toast.error(error.response.data.errors.password[0]);
+    //     }
+    //     console.log(error.response.data.errors.name[0]);
+    //   } else {
+    //     // Gérer d'autres types d'erreurs
+    //     console.error("Request Error:", error.message);
+    //   }
+    // }
   };
 
   const Login = async (e) => {
     e.preventDefault();
+    login({email, password});
+    
 
-    try {
-      const response = await axios.post("http://localhost:8000/api/login", {
-        email,
-        password,
-      });
-      if (response.data.error) {
-        console.log(response.data.error);
-        if(!email && !password){
-          toast.error("Fill all Fields please");
-        } else if(!email){
-          toast.error(response.data.error.email[0])
-        } else if(!password){
-          toast.error(response.data.error.password[0])
-        }
+    // try {
+    //   const response = await axios.post("http://localhost:8000/api/login", {
+    //     email,
+    //     password,
+    //   });
+    //   if (response.data.error) {
+    //     console.log(response.data.error);
+    //     if(!email && !password){
+    //       toast.error("Fill all Fields please");
+    //     } else if(!email){
+    //       toast.error(response.data.error.email[0])
+    //     } else if(!password){
+    //       toast.error(response.data.error.password[0])
+    //     }
         
-      } else {
-        // localStorage.setItem("authToken", response.data.token);
-        toast.success("You are logged in !");
-        navigate("/");
-      }
-    } catch (error) {
-      if (error.status === 422) {
-        toast.error(error.response.data.message);
-      }
-    }
+    //   } else {
+    //     // localStorage.setItem("authToken", response.data.token);
+    //     toast.success("You are logged in !");
+    //     navigate("/");
+    //   }
+    // } catch (error) {
+    //   if (error.status === 422) {
+    //     toast.error(error.response.data.message);
+    //   }
+    // }
   };
   return (
     <Box className="w-full mt-12 mb-[100px] flex justify-center items-center">
       {/* CREATE ACCOUNT FIELD */}
       <Box
         className={`w-[400px] bg-white border-[1px] rounded-2xl py-[50px] shadow-xl px-10 space-y-2 ${
-          login && "hidden"
+          logStatus && "hidden"
         }`}
       >
         <Text className="!text-2xl !text-gray-700 !font-semibold">
@@ -145,7 +146,7 @@ export default function Login() {
           Already have an account?{" "}
           <span
             className="text-myblue underline cursor-pointer"
-            onClick={() => setLogin(true)}
+            onClick={() => setLogStatus(true)}
           >
             Login here
           </span>{" "}
@@ -155,7 +156,7 @@ export default function Login() {
       {/* LOGIN FIELD */}
       <Box
         className={`w-[400px] bg-white border-[1px] rounded-2xl py-[50px] shadow-xl px-10 space-y-2 ${
-          !login && "hidden"
+          !logStatus && "hidden"
         }`}
       >
         <Text className="!text-2xl !text-gray-700 !font-semibold">Login</Text>
@@ -206,7 +207,7 @@ export default function Login() {
           Create an new account?{" "}
           <span
             className="text-myblue underline cursor-pointer"
-            onClick={() => setLogin(false)}
+            onClick={() => setLogStatus(false)}
           >
             Click here
           </span>{" "}

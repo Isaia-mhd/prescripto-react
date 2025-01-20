@@ -1,12 +1,15 @@
-import { Box, Button, Image} from "@mantine/core";
+import { Box, Button, Image } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer } from "@mantine/core";
 import { useLocation } from "react-router-dom";
+import useAuthContext from "../context/AuthContext";
+import { useEffect } from "react";
 // import axios from "axios";
 export default function Header() {
   const [opened, { open, close }] = useDisclosure(false);
   const location = useLocation();
+  const { user, getUser, logout } = useAuthContext();
   // const navigate = useNavigate();
   console.log(location);
   const pathMatched = (route) => {
@@ -15,7 +18,11 @@ export default function Header() {
     }
   };
 
-  
+  useEffect(() => {
+    if (!user) {
+      getUser();
+    }
+  }, []);
 
   return (
     <Box className="w-full bg-white ">
@@ -66,22 +73,31 @@ export default function Header() {
             >
               Contact
             </Link>
+            {user ? (
+              <Link
+                to="/profile"
+                className={`!text-xs uppercase font-bold py-2 border-b-2 border-transparent ${
+                  pathMatched("/about") && "border-blue-600"
+                }`}
+              >
+                Profile
+              </Link>
+            ) : (
+              ""
+            )}
           </Box>
+          {/* LOGOUT BUTTON */}
           <Box className="flex items-center justify-end">
-            <Link
-              to="/login"
-              className="py-3 px-5 bg-myblue text-white text-sm rounded-full"
-            >
-              Create account
-            </Link>
-            {/* <form onSubmit={Logout}>
-            <Button
-              type="submit"
-              className="py-3 px-5 bg-myblue text-white text-sm rounded-full"
-            >
-              LOG OUT
-            </Button>
-            </form> */}
+            {user ? (
+              <Button className="!bg-red-600 !text-sm !font-semibold" onClick={logout}>Logout</Button>
+            ) : (
+              <Link
+                to="/login"
+                className="py-3 px-5 bg-myblue text-white text-sm rounded-full"
+              >
+                Create account
+              </Link>
+            )}
           </Box>
         </Box>
 
@@ -136,6 +152,27 @@ export default function Header() {
               >
                 Contact
               </Link>
+              {/* LOGOUT BUTTON */}
+              <Box className="flex items-center justify-end">
+                {user ? (
+                  <Button
+                    onClick={() => {
+                      logout();
+                      close();
+                    }}
+                  >
+                    Logout
+                  </Button>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={close}
+                    className="py-3 px-5 bg-myblue text-white text-sm rounded-full"
+                  >
+                    Create account
+                  </Link>
+                )}
+              </Box>
             </Box>
           </Drawer>
           <Box className="w-[30px]">

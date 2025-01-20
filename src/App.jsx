@@ -21,7 +21,7 @@ function App() {
   return (
     <MantineProvider>
       <Box className="w-full max-w-[90%] sm:max-w-[80%]  mx-auto">
-        <Router>
+        {/* <Router> */}
           <Header />
           <Routes>
             <Route path="/" element={<Home />}></Route>
@@ -40,7 +40,7 @@ function App() {
           </Routes>
           <Footer />
         
-        </Router>
+        {/* </Router> */}
        
       </Box>
       <ToastContainer

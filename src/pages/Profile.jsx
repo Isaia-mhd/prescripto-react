@@ -1,7 +1,8 @@
 import { Box, Image, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
-
+import useAuthContext from "../context/AuthContext";
 export default function Profile() {
+  const {user, getUser} = useAuthContext();
   const [formData, setFormData] = useState({
     email: "mohamedesaie21@gmail.com",
     phone: "261329070729",
@@ -11,6 +12,14 @@ export default function Profile() {
   });
 
   const { email, phone, address, gender, date } = formData;
+
+
+  useEffect(()=>{
+    if(!user){
+      getUser();
+    }
+  }, [])
+  
   useEffect(() => {
     setFormData((prevData) => ({
       ...prevData,
@@ -29,7 +38,7 @@ export default function Profile() {
       </Box>
 
       <Text className="w-[400px] !py-[10px] border-b-2 !text-2xl !font-semibold !text-slate-800 ">
-        Edward Vincent
+        {user?.name}
       </Text>
 
       <form>
@@ -46,7 +55,7 @@ export default function Profile() {
             </label>
             <input
               type="email"
-              value={email}
+              value={user ? user.email : email}
               id="email"
               className="w-[300px] text-blue-600 text-sm font-semibold  "
             />
