@@ -3,69 +3,74 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import apiClient from "../../apiClient";
 
 export default function Login() {
   const [login, setLogin] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [erreur, setErreur] = useState(null);
   const navigate = useNavigate();
 
   const Register = async (e) => {
     e.preventDefault();
-    setErreur(null);
+
     try {
       const response = await axios.post("http://localhost:8000/api/register", {
         name,
         email,
         password,
       });
-      
-      
       console.log(response.data.error);
-      if(response.data.error){
-          toast.error(response.data.error);
-      } else{
-          localStorage.setItem("authToken", response.data.token);
-          toast.success("User registered");
-          setName("");
-          setEmail("");
-          setPassword("");
-      }
-      
-
-    } catch (error) {
-      // Gérer les erreurs de validation ou de serveur
-      if (err.response && err.response.data) {
-        setErreur(err.response.data.message || "Une erreur est survenue.");
-        toast.error(erreur);
+      if (response.data.error) {
+        toast.error(response.data.error);
       } else {
-        setErreur("Impossible de se connecter au serveur.");
-        toast.error(erreur);
+        localStorage.setItem("authToken", response.data.token);
+        toast.success("You are registered !");
+        navigate("/");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        if (error.response.data.errors.name) {
+          toast.error(error.response.data.errors.name[0]);
+        } else if (error.response.data.errors.email) {
+          toast.error(error.response.data.errors.email[0]);
+        } else {
+          toast.error(error.response.data.errors.password[0]);
+        }
+        console.log(error.response.data.errors.name[0]);
+      } else {
+        // Gérer d'autres types d'erreurs
+        console.error("Request Error:", error.message);
       }
     }
   };
 
   const Login = async (e) => {
     e.preventDefault();
-    setErreur(null);
+
     try {
       const response = await axios.post("http://localhost:8000/api/login", {
-        name,
+        email,
         password,
       });
-
-      localStorage.setItem("authToken", response.data.token);
-      toast.success("You are logged in !");
-      navigate("/");
-    } catch (error) {
-      // Gestion des erreurs
-      if (err.response) {
-        setErreur(err.response.data.message); // Message d'erreur provenant de l'API Laravel
+      if (response.data.error) {
+        console.log(response.data.error);
+        if(!email && !password){
+          toast.error("Fill all Fields please");
+        } else if(!email){
+          toast.error(response.data.error.email[0])
+        } else if(!password){
+          toast.error(response.data.error.password[0])
+        }
+        
       } else {
-        setErreur("Une erreur s'est produite. Veuillez réessayer.");
+        // localStorage.setItem("authToken", response.data.token);
+        toast.success("You are logged in !");
+        navigate("/");
+      }
+    } catch (error) {
+      if (error.status === 422) {
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -186,7 +191,6 @@ export default function Login() {
               className="w-full py-1 px-3 bg-white border-2 rounded-md "
             />
           </Box>
-          <Box>{erreur && <p style={{ color: "red" }}>{erreur}</p>}</Box>
 
           <Box className="!mt-6 !mb-6">
             <button
@@ -196,6 +200,7 @@ export default function Login() {
               Login
             </button>
           </Box>
+         
         </form>
         <Text className="!text-gray-700 !text-sm !font-semibold">
           Create an new account?{" "}
