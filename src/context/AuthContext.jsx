@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 const AuthContext = createContext({});
 
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
     const csrf = async () => {
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       
         localStorage.setItem("authToken", response.data.token);
         getUser();
+
         toast.success("You are logged in !");
         navigate("/");
     } catch (error) {

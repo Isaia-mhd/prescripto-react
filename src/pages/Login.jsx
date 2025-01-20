@@ -3,6 +3,7 @@ import { Box, Text } from "@mantine/core";
 import { useState } from "react";
 // import { toast } from "react-toastify";
 import useAuthContext from "../context/AuthContext";
+import Loading from "../components/Loading";
 
 export default function Login() {
   const [logStatus, setLogStatus] = useState(false);
@@ -10,10 +11,15 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const {login, register} = useAuthContext();
+  const [loading, setLoading] = useState(false);
 
   const Register = async (e) => {
     e.preventDefault();
-    register({name, email, password});
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      register({name, email, password});
+    }, 2000);
     // try {
     //   const response = await axios.post("http://localhost:8000/api/register", {
     //     name,
@@ -46,7 +52,11 @@ export default function Login() {
 
   const Login = async (e) => {
     e.preventDefault();
-    login({email, password});
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      login({email, password});
+    }, 2000);
     
 
     // try {
@@ -76,9 +86,12 @@ export default function Login() {
     // }
   };
   return (
+    <>
+    
     <Box className="w-full mt-12 mb-[100px] flex justify-center items-center">
       {/* CREATE ACCOUNT FIELD */}
-      <Box
+      {loading && <Loading/>}
+      {!loading && <Box
         className={`w-[400px] bg-white border-[1px] rounded-2xl py-[50px] shadow-xl px-10 space-y-2 ${
           logStatus && "hidden"
         }`}
@@ -151,7 +164,7 @@ export default function Login() {
             Login here
           </span>{" "}
         </Text>
-      </Box>
+      </Box>}
 
       {/* LOGIN FIELD */}
       <Box
@@ -214,5 +227,6 @@ export default function Login() {
         </Text>
       </Box>
     </Box>
+    </>
   );
 }
