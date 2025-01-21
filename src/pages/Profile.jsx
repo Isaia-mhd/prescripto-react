@@ -8,7 +8,7 @@ export default function Profile() {
     phone: "261329070729",
     address: "401 City one",
     gender: "Male",
-    date: "21/05/2003",
+    date: "2003-05-21",
   });
 
   const { email, phone, address, gender, date } = formData;
@@ -56,6 +56,7 @@ export default function Profile() {
             <input
               type="email"
               value={user ? user.email : email}
+              readOnly
               id="email"
               className="w-[300px] text-blue-600 text-sm font-semibold  "
             />
@@ -70,6 +71,7 @@ export default function Profile() {
             <input
               type="text"
               value={phone}
+              readOnly
               id="email"
               className="w-[300px] text-blue-600 text-sm font-semibold"
             />
@@ -84,6 +86,7 @@ export default function Profile() {
             <input
               type="email"
               value={address}
+              readOnly
               id="email"
               className="w-[300px] text-blue-600 text-sm font-semibold"
             />
@@ -104,6 +107,7 @@ export default function Profile() {
             <input
               type="text"
               value={gender}
+              readOnly
               id="email"
               className="w-[300px] text-gray-600 text-sm font-semibold"
             />
@@ -118,6 +122,7 @@ export default function Profile() {
             <input
               type="date"
               value={date}
+              readOnly
               id="email"
               className="w-[150px] text-gray-600 text-sm font-semibold"
             />

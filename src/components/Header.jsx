@@ -1,5 +1,5 @@
 import { Box, Button, Image } from "@mantine/core";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer } from "@mantine/core";
 import { useLocation } from "react-router-dom";
@@ -160,9 +160,11 @@ export default function Header() {
                       logout();
                       close();
                     }}
+                    className="!bg-red-600 !text-sm !font-semibold"
                   >
                     Logout
                   </Button>
+                  
                 ) : (
                   <Link
                     to="/login"

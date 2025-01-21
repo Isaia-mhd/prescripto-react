@@ -23,7 +23,9 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user);
         console.log(data);
       } catch (error) {
-        console.error("Failed to fetch user data:", error.message);
+        if(error.status === 401){
+          toast.error(`Failed to fetch user data: ${error.message} ` );
+        }
       }
   };
 
@@ -36,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       );
       
         localStorage.setItem("authToken", response.data.token);
-        getUser();
+        await getUser();
 
         toast.success("You are logged in !");
         navigate("/");
@@ -51,12 +53,14 @@ export const AuthProvider = ({ children }) => {
         } else if(error.response.data.error.password) {
             toast.error(error.response.data.error.password[0]);
         } else{
-            
+      
             toast.error(error.response.message);
         }
       } else if(error.status === 500){
         toast.error(error.response.data.error)
+        console.log(error.response.data.error)
       }
+      
     }
   };
 

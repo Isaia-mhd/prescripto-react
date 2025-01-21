@@ -15,51 +15,69 @@ import MakeAppointment from "./pages/MakeAppointment";
 import StoreDoctor from "./pages/StoreDoctor";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PrivateRoute from "./components/protectedRoute";
+import  PrivateRoute from "./components/protectedRoute";
+import AuthRoute from "./components/authRoute";
+import { useEffect, useState } from "react";
+import Loading from "./components/Loading";
 
 function App() {
-  return (
-    <MantineProvider>
-      <Box className="w-full max-w-[90%] sm:max-w-[80%]  mx-auto">
-        {/* <Router> */}
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/doctors" element={<Doc />}></Route>
-          <Route path="/doctors/:docSpecialty" element={<Doc />}></Route>
-          <Route path="/about" element={<About />}></Route>
-          <Route path="/contact" element={<Contact />}></Route>
-          <Route path="/profile" element={<PrivateRoute />}>
-            <Route path="/profile" element={<Profile />}></Route>
-          </Route>
-          <Route path="/login" element={<Login />}>
-          
-          </Route>
-          <Route path="/my-appointments" element={<Appointment />}></Route>
-          <Route
-            path="/appointment/:docId"
-            element={<MakeAppointment />}
-          ></Route>
-          <Route path="/doctor/:docId" element={<StoreDoctor />}></Route>
-        </Routes>
-        <Footer />
+  
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); 
+    }, 3000);
 
-        {/* </Router> */}
-      </Box>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
-    </MantineProvider>
+    return () => clearTimeout(timer);
+  }, []);
+  return (
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <MantineProvider>
+          <Box className="w-full max-w-[90%] sm:max-w-[80%]  mx-auto">
+            {/* <Router> */}
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />}></Route>
+              <Route path="/doctors" element={<Doc />}></Route>
+              <Route path="/doctors/:docSpecialty" element={<Doc />}></Route>
+              <Route path="/about" element={<About />}></Route>
+              <Route path="/contact" element={<Contact />}></Route>
+              <Route element={<AuthRoute />}>
+                <Route path="/profile" element={<Profile />}></Route>
+              </Route>
+              <Route element={<PrivateRoute />}>
+                <Route path="/login" element={<Login />}></Route>
+              </Route>
+              <Route path="/my-appointments" element={<Appointment />}></Route>
+              <Route
+                path="/appointment/:docId"
+                element={<MakeAppointment />}
+              ></Route>
+              <Route path="/doctor/:docId" element={<StoreDoctor />}></Route>
+            </Routes>
+            <Footer />
+
+            {/* </Router> */}
+          </Box>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+            transition={Bounce}
+          />
+        </MantineProvider>
+      )}
+    </>
   );
 }
 
