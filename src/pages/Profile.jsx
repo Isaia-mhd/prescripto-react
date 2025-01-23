@@ -1,6 +1,7 @@
 import { Box, Image, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
 import useAuthContext from "../context/AuthContext";
+import { Link } from "react-router-dom";
 export default function Profile() {
   const {user, getUser} = useAuthContext();
   const [formData, setFormData] = useState({
@@ -130,6 +131,8 @@ export default function Profile() {
         </Box>
         <button type="submit" className="w-[200px] py-2 px-2 rounded-full border-[1px] border-blue-600 mt-6 text-sm ">Save information</button>
       </form>
+
+      <Link to="/my-appointments">My appointments</Link>
     </Box>
   );
 }
